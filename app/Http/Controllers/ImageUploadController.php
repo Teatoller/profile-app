@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Upload;
 use Illuminate\Http\Request;
 use JD\Cloudder\Facades\Cloudder;
 
@@ -9,7 +10,8 @@ class ImageUploadController extends Controller
 {
     public function home()
     {
-        return view('home');
+        $images = Upload::all();
+        return view('home', compact('images'));
     }
 
     public function uploadImages(Request $request)
@@ -38,5 +40,14 @@ class ImageUploadController extends Controller
 
         return redirect()->back()->with('status', 'Image Uploaded Successfully');
 
+    }
+
+    public function saveImages(Request $request, $image_url)
+    {
+        $image = new Upload();
+        $image->image_name = $request->file('image_name')->getClientOriginalName();
+        $image->image_url = $image_url;
+
+        $image->save();
     }
 }
